@@ -1,0 +1,112 @@
+<template>
+  <div class="index">
+    <Navbar
+      :title="activeIndex == 1 ? '运单' : '我的'"
+      @getNavBarHeight="getNavbarHeight"
+      :isShowBack="false"
+      :bgImg="activeIndex == 1 ?  '' : mineBg"
+      :titleClor="activeIndex == 1 ? '#333333' : '#ffffff'"
+    ></Navbar>
+    <Waybill v-show="activeIndex == 1" ref="waybill"></Waybill>
+    <Mine v-show="activeIndex == 2"></Mine>
+    <Tabbar :activeIndex="activeIndex" @changeIndex="changeIndex"></Tabbar>
+  </div>
+</template>
+
+<script>
+import Navbar from "@/components/navbar/navbar.vue";
+import Tabbar from "@/components/tabbar/tabbar.vue";
+import Mine from "@/components/mine/mine.vue";
+import Waybill from "@/components/waybill/waybill.vue";
+import { urlTobase64 } from "@/utils/common";
+export default {
+  components: {
+    Navbar,
+    Tabbar,
+    Mine,
+    Waybill
+  },
+  data() {
+    return {
+      activeIndex: 1,
+      navbarHeight: 0
+    };
+  },
+  computed: {
+    mineBg() {
+      return this.$store.state.mineBg;
+    },
+    isIphone() {
+      return this.$store.state.isIphone;
+    },
+    conentHeight: () => {
+      // console.log(this.$store.state.isIphone)
+      // var bottomHeight = this.isIphone ? uni.rpx2px(162) : uni.rpx2px(102)
+      // console.log(bottomHeight)
+      // return uni.getSystemInfoSync().windowHeight - this.navbarHeight - bottomHeight
+    }
+  },
+  methods: {
+    urlTobase64,
+    changeIndex(index) {
+      this.activeIndex = index;
+      if (index == 2) {
+        uni.setNavigationBarColor({
+          frontColor: "#ffffff", //文字颜色
+          backgroundColor: "#314E9B" //底部背景色
+        });
+        this.setTitle('我的')
+      } else {
+        uni.setNavigationBarColor({
+          frontColor: "#000000", //文字颜色
+          backgroundColor: "#314E9B" //底部背景色
+        });
+        this.setTitle('运单')
+      }
+    },
+    getNavbarHeight(height) {
+      this.navbarHeight = height;
+    },
+    setTitle(title){
+      uni.setNavigationBarTitle({
+          title
+        });
+    }
+  },
+  watch: {
+    navbarHeight(val) {
+      console.log("navbarHeight", val);
+    }
+  },
+
+  // 页面周期函数--监听页面加载
+  onLoad() {
+    this.setTitle('运单')
+  },
+  // 页面周期函数--监听页面初次渲染完成
+  onReady() {
+    console.log("isIphone", uni.upx2px(162), uni.upx2px(102));
+  },
+  // 页面周期函数--监听页面显示(not-nvue)
+  onShow() {},
+  // 页面周期函数--监听页面隐藏
+  onHide() {},
+  // 页面周期函数--监听页面卸载
+  onUnload() {},
+  // 页面处理函数--监听用户下拉动作
+  // onPullDownRefresh() { uni.stopPullDownRefresh(); },
+  // 页面处理函数--监听用户上拉触底
+  onReachBottom() {
+    console.log("onReachBottom");
+    if (this.activeIndex == 1) {
+      this.$refs.waybill.onReachBottoms();
+    }
+  }
+  // 页面处理函数--监听页面滚动(not-nvue)
+  // onPageScroll(event) {},
+  // 页面处理函数--用户点击右上角分享
+  // onShareAppMessage(options) {},
+};
+</script>
+
+<style lang="scss" scoped></style>

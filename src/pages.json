@@ -1,0 +1,89 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"disableSwipeBack": true
+			}
+		},
+		{
+			"path": "pages/identity/identity",
+			"style": {
+				"navigationBarTitleText": "郴邦物流"
+			}
+		},
+		{
+			"path": "pages/waybillDetails/waybillDetails",
+			"style": {
+				"navigationBarTitleText": "运单详情"
+			}
+		},
+		{
+			"path": "pages/authentication/authentication",
+			"style": {
+				"navigationBarTitleText": "实名认证"
+			}
+		},
+		{
+			"path": "pages/driverCertification/driverCertification",
+			"style": {
+				"navigationBarTitleText": "司机认证"
+			}
+		},
+		{
+			"path": "pages/myCar/myCar",
+			"style": {
+				"navigationBarTitleText": "我的车辆"
+			}
+		},
+		{
+			"path": "pages/addCar/addCar",
+			"style": {
+				"navigationBarTitleText": "添加车辆"
+			}
+		},
+		{
+			"path": "pages/news/news",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/setUp/setUp",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/bindPhone/bindPhone",
+			"style": {
+				"navigationBarTitleText": "绑定手机号"
+			}
+		},
+		{
+			"path": "pages/myWaybill/myWaybill",
+			"style": {
+				"navigationBarTitleText": "我的运单"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "贮理物流",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#F5F5F5",
+		"navigationBarShadow": {
+			"colorType": "grey"
+		}
+	},
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	}
+}
