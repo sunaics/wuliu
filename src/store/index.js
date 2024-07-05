@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { urlTobase64} from '@/utils/common'
+import { memberLogin } from '@/api/user'
 
 Vue.use(Vuex);
 
@@ -47,6 +48,12 @@ const store = new Vuex.Store({
                 // });
             });
         },
+        memberLogin({ commit }, data){
+            console.log("data",data)
+            memberLogin(data).then(res => {
+                console.log(res)
+            })
+        }
 
     },
     modules: {},

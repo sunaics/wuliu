@@ -23,8 +23,8 @@ export default {
   },
   data() {
     return {
-      loginShow: false,
-      infoShow: true,
+      loginShow: true,
+      infoShow: false,
       bindShow: false
     };
   },

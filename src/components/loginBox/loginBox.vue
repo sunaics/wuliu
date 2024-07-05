@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { memberLogin } from '@/api/user'
 export default {
   name: "login",
   props: {
@@ -102,7 +103,20 @@ export default {
   computed: {},
   methods: {
     bindPhone() {},
-    login() {},
+    login() {
+      memberLogin(this.formDate).then(res => {
+        console.log('res', res);
+        // if (res) {
+        //   uni.$emit("login", "登录成功！");
+        // }
+      });
+      // this.$store.dispatch("memberLogin", this.formDate).then(res => {
+      //   console.log(res);
+      //   // if (res) {
+      //   //   uni.$emit("login", "登录成功！");
+      //   // }
+      // });
+    },
     quickLogin() {
       uni.getProvider({
         service: "oauth",
