@@ -1,5 +1,6 @@
 
 import { RouterMount, createRouter } from "uni-simple-router";
+import store from '@/store'
 const ROUTES = [
     {
         path: "/pages/index/index",
@@ -113,7 +114,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     console.log("跳转开始", to);
     // 登录验证
-    if ((to.meta.auth || to.meta.auth === undefined) && !uni.getStorageSync("token")) {
+    var userInfo = uni.getStorageSync("userInfo");
+    if (userInfo && userInfo.openId && !userInfo.phone) {
+        next('/');
+    }else if ((to.meta.auth || to.meta.auth === undefined) && !uni.getStorageSync("token")) {
         let fullPath = encodeURIComponent(to.fullPath);
         console.log('fullPath', fullPath)
         console.log('fullPath1', decodeURIComponent(fullPath))

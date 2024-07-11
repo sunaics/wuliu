@@ -1,22 +1,24 @@
 <template>
   <div class="loginBox">
     <div class="l_list">
-      <u--form labelWidth="130rpx" :model="formDate" :rules="rules" ref="uForm">
+      <u--form labelWidth="130rpx" :model="formData" ref="uForm">
         <u-form-item label="手机号" prop="phone" borderBottom>
-          <u--input v-model="formDate.phone" inputAlign="left" border="none" placeholder="请输入手机号"></u--input>
+          <u--input v-model="formData.phone" inputAlign="left" border="none" placeholder="请输入手机号"></u--input>
         </u-form-item>
         <u-form-item label="验证码" prop="code" borderBottom>
           <div class="flex_ac_sb">
-            <u--input v-model="formDate.code" inputAlign="left" border="none" placeholder="请输入验证码"></u--input>
-            <div style="width: 176rpx;">
+            <u--input v-model="formData.code" inputAlign="left" border="none" placeholder="请输入验证码"></u--input>
+            <div style="width: 230rpx;">
               <u-button
                 type="primary"
                 :plain="true"
-                text="获取验证码"
+                :text="btnText"
                 color="#4e5ff7"
                 :customStyle="{
                   fontSize: '24rpx'
                 }"
+                :disabled="btnDisabled"
+                @click="getCode"
               ></u-button>
             </div>
           </div>
@@ -41,6 +43,8 @@
           :customStyle="{fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx'}"
           color="#4E5FF7"
           @click="login"
+          :loading="loading"
+        :loadingText="loadingText"
         ></u-button>
         <u-button
           type="primary"
@@ -56,7 +60,8 @@
 </template>
 
 <script>
-import { memberLogin } from '@/api/user'
+import { memberLogin, getCode, login } from "@/api/user";
+import { getToken } from "@/utils/getToken";
 export default {
   name: "login",
   props: {
@@ -67,50 +72,72 @@ export default {
   },
   data() {
     return {
-      formDate: {
-        phone: "",
+      formData: {
+        phone: "13122033991",
         code: ""
       },
-      rules: {
-        phone: [
-          {
-            required: true,
-            message: "请输入手机号",
-            trigger: ["change", "blur"]
-          },
-          {
-            // 自定义验证函数，见上说明
-            validator: (rule, value, callback) => {
-              // 上面有说，返回true表示校验通过，返回false表示不通过
-              // uni.$u.test.mobile()就是返回true或者false的
-              return uni.$u.test.mobile(value);
-            },
-            message: "手机号码不正确",
-            // 触发器可以同时用blur和change
-            trigger: ["change", "blur"]
-          }
-        ],
-        code: [
-          {
-            required: true,
-            message: "请输入验证码",
-            trigger: ["change", "blur"]
-          }
-        ]
-      }
+
+      codeNum: 120,
+      btnText: "获取验证码",
+      btnDisabled: false,
+      timer: null,
+      loading: false,
+      loadingText: "登录中...",
     };
   },
   computed: {},
   methods: {
+    getCode() {
+      if (!this.formData.phone) {
+        uni.$u.toast("请输入手机号");
+      } else if (!uni.$u.test.mobile(this.formData.phone)) {
+        uni.$u.toast("手机号格式不正确");
+      } else {
+        clearInterval(this.timer);
+        this.btnDisabled = true;
+        getCode({ mobile: this.formData.phone })
+          .then(res => {
+            console.log(res);
+            this.btnText = `重新获取(${this.codeNum}s)`;
+            this.timer = setInterval(() => {
+              this.codeNum--;
+              if (this.codeNum < 0) {
+                this.btnDisabled = false;
+                this.btnText = "获取验证码";
+              } else {
+                this.btnText = `重新获取(${this.codeNum}s)`;
+              }
+            }, 1000);
+          })
+          .catch(err => {
+            this.btnDisabled = false;
+            this.btnText = "获取验证码";
+          });
+      }
+    },
     bindPhone() {},
     login() {
-      memberLogin(this.formDate).then(res => {
-        console.log('res', res);
-        // if (res) {
-        //   uni.$emit("login", "登录成功！");
-        // }
+      this.$emit("memberLogin", 11111);
+      if (!this.formData.phone) {
+        return uni.$u.toast("请输入手机号");
+      } else if (!uni.$u.test.mobile(this.formData.phone)) {
+        return uni.$u.toast("手机号格式不正确");
+      } else if(!this.btnDisabled){
+        return uni.$u.toast("请获取验证码");
+      }else if (!this.formData.code) {
+        return uni.$u.toast("请输入验证码");
+      }
+      this.loading = true;
+      memberLogin(this.formData).then(res => {
+        this.loading = false;
+        console.log("res", res);
+        this.$emit("memberLogin", res);
+
+      }).catch(err => {
+        this.loading = false;
+        console.log("err", err);
       });
-      // this.$store.dispatch("memberLogin", this.formDate).then(res => {
+      // this.$store.dispatch("memberLogin", this.formData).then(res => {
       //   console.log(res);
       //   // if (res) {
       //   //   uni.$emit("login", "登录成功！");
@@ -127,6 +154,11 @@ export default {
             success: function(loginRes) {
               console.log(loginRes);
               uni.$emit("quickLogin", "登录成功！");
+              login({
+                code: loginRes.code
+              }).then(res => {
+                console.log(res);
+              })
             }
           });
         }
@@ -136,7 +168,11 @@ export default {
   watch: {},
 
   // 组件周期函数--监听组件挂载完毕
-  mounted() {},
+  mounted() {
+    getToken().then(res => {
+      console.log(res);
+    });
+  },
   // 组件周期函数--监听组件数据更新之前
   beforeUpdate() {},
   // 组件周期函数--监听组件数据更新之后
@@ -151,5 +187,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

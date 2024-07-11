@@ -4,7 +4,7 @@
       <div class="logo">
         <img class="imgAll" src="../../static/img/logo.png" alt />
       </div>
-      <LoginBox :isBind="false" @login="login"></LoginBox>
+      <LoginBox :isBind="false" @memberLogin="memberLogin" @quickLogin="quickLogin"></LoginBox>
     </div>
     <BindIdentity v-if="bindShow"></BindIdentity>
     <InfoBox v-if="infoShow"></InfoBox>
@@ -33,17 +33,33 @@ export default {
     uni.hideHomeButton();
     // #endif
 
-    console.log(query.redirect);
-    console.log(decodeURIComponent(decodeURIComponent(query.redirect)));
-
-    uni.$on("quickLogin", data => {
-      console.log(data);
-    });
+    var userInfo = uni.getStorageSync("userInfo");
+    if (!userInfo.openId) {
+      this.loginShow = false;
+      this.infoShow = true;
+    } else if (!userInfo.suplyid || !userInfo.carid) {
+      this.loginShow = false;
+      this.bindShow = true;
+    }
   },
   onShow() {},
   methods: {
-    login() {
-      console.log(111);
+    memberLogin(res) {
+      console.log(res);
+      // this.$store.commit("SET_USERINFO", res);
+      if (res.data.openId && (res.data.suplyid || res.data.carid)) {
+        uni.$emit("login", "登录成功！");
+        this.$Router.replaceAll("/");
+      } else if (!res.data.openId) {
+        this.loginShow = false;
+        this.infoShow = true;
+      } else if (!res.data.suplyid || !res.data.carid) {
+        this.loginShow = false;
+        this.bindShow = true;
+      }
+    },
+    quickLogin() {
+      this.$Router.replaceAll("/");
     }
   }
 };

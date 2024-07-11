@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import {uploadFile} from '@/utils/alioss.js'
 export default {
   name: "infoBox",
   props: {},
@@ -40,6 +41,9 @@ export default {
     onChooseAvatar(e) {
       console.log(e);
       this.avatarUrl = e.detail.avatarUrl
+      uploadFile(e.detail.avatarUrl).then(res=>{
+          console.log(res.url)//图片路径
+        })
     }
   },
   watch: {},

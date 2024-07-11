@@ -1,19 +1,10 @@
-import request from '@/utils/axios';
+const request = uni.$u.http
 
 // 手机号登录
-export function memberLogin(data) {
-  return request({
-    url: '/api/member/loginbyphone',
-    method: 'post',
-    data
-  });
-}
+export const memberLogin = (params, config = {}) => request.post('/api/member/loginbyphone', params, config)
 
 // 获取短信验证码
-export function getCode(data) {
-  return request({
-    url: '/Code',
-    method: 'post',
-    data
-  });
-}
+export const getCode = (params, config = {}) => request.post('/api/Code', params, config)
+
+// 获取短信验证码
+export const login = (params, config = {}) => request.post('/api/login', params, config)

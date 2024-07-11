@@ -4,7 +4,7 @@ import './uni.promisify.adaptor'
 import uView from 'uview-ui'
 import store from "./store";
 import { router, RouterMount } from "./router/index";
-
+import request from "./utils/request";
 Vue.use(uView)
 Vue.use(router)
 // 如此配置即可
@@ -30,7 +30,8 @@ const app = new Vue({
   ...App,
   store
 });
-
+// 引入请求封装，将app参数传递到配置中
+request(app)
 //v1.3.5起 H5端 你应该去除原有的app.$mount();使用路由自带的渲染方式
 // #ifdef H5
 RouterMount(app, router, "#app");
