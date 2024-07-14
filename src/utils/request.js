@@ -49,11 +49,20 @@ function request(vm) {
 
 	// 响应拦截
 	uni.$u.http.interceptors.response.use((response) => { /* 对响应成功做点什么 可使用async await 做异步操作*/
-		const data = response.data
-		console.log('data', data)
+		let data = response.data
+		console.log('data1', data)
+		console.log('data2', typeof data)
+		
+		// 判断data是否是字符串，如果是字符串则转为对象
+		if (data && typeof data === 'string') {
+			// 替换字符串手机号验证成功!
+			data = data.replace(/手机号验证成功!/, 0)
+			data = JSON.parse(data) 
+			console.log('data3', data)
+		}
 
 		if (data.code == 1000) {
-			return data.data ? data.data : {}
+			return data || {}
 		} else {
 			uni.$u.toast(response.data.msg || '请求失败，请重试！')
 			return Promise.reject(data)

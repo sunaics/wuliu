@@ -10,6 +10,13 @@
     <Waybill v-show="activeIndex == 1" ref="waybill"></Waybill>
     <Mine v-show="activeIndex == 2"></Mine>
     <Tabbar :activeIndex="activeIndex" @changeIndex="changeIndex"></Tabbar>
+
+    <u-overlay :show="overlayShow" @click="show = false">
+      <div class="overlayWrap">
+        <loginAlert></loginAlert>
+      </div>
+	</u-overlay>
+
   </div>
 </template>
 
@@ -18,13 +25,15 @@ import Navbar from "@/components/navbar/navbar.vue";
 import Tabbar from "@/components/tabbar/tabbar.vue";
 import Mine from "@/components/mine/mine.vue";
 import Waybill from "@/components/waybill/waybill.vue";
+import loginAlert from "@/components/loginAlert/loginAlert.vue";
 import { urlTobase64 } from "@/utils/common";
 export default {
   components: {
     Navbar,
     Tabbar,
     Mine,
-    Waybill
+    Waybill,
+    loginAlert
   },
   data() {
     return {
@@ -39,11 +48,9 @@ export default {
     isIphone() {
       return this.$store.state.isIphone;
     },
-    conentHeight: () => {
-      // console.log(this.$store.state.isIphone)
-      // var bottomHeight = this.isIphone ? uni.rpx2px(162) : uni.rpx2px(102)
-      // console.log(bottomHeight)
-      // return uni.getSystemInfoSync().windowHeight - this.navbarHeight - bottomHeight
+    overlayShow() {
+      let userInfo = this.$store.state.userInfo || {};
+      return !userInfo.phone || ( !userInfo.olSID && !userInfo.olCID)
     }
   },
   methods: {
@@ -109,4 +116,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.overlayWrap{
+  width: 335px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 40rpx 40rpx 60rpx;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+</style>

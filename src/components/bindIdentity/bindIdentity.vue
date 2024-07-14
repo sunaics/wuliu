@@ -1,8 +1,8 @@
 <template>
-  <div class="bindIdentity">
-    <div class="title">请选择您的身份</div>
+  <div class="bindIdentity" :class="{alertWrap : isAlert}">
+    <div class="title" >请选择您的身份</div>
     <div class="list">
-      <div class="item flex_ac_sb" :class="{'active': activeIndex == 1}" @click="activeIndex =1">
+      <div class="item flex_ac_sb" :class="{'active': activeIndex == 0}" @click="activeIndex =0">
         <div class="left">
           <div class="name">司机</div>
           <div class="text">注册成为司机，开始运输</div>
@@ -11,7 +11,7 @@
           <img class="imgAll" src="../../static/img/select.png" alt="">
         </div>
       </div>
-      <div class="item flex_ac_sb" :class="{'active': activeIndex == 2}"  @click="activeIndex =2">
+      <div class="item flex_ac_sb" :class="{'active': activeIndex == 1}"  @click="activeIndex =1">
         <div class="left">
           <div class="name">供应商</div>
           <div class="text">注册成为供应商</div>
@@ -28,22 +28,41 @@
         size="large"
         :customStyle="{fontSize: '36rpx',  boxShadow: '0rpx 8rpx 14rpx 0rpx rgba(0,19,194,0.14)'}"
         color="#4E5FF7"
-        @click="bindPhone"
+        @click="bindUserRole"
       ></u-button>
   </div>
 </template>
 
 <script>
+import { UserSelectRole } from "@/api/user";
 export default {
   name: "bindIdentity",
-  props: {},
+  props: {
+    isAlert: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      activeIndex: 1
+      activeIndex: 0
     };
   },
   computed: {},
-  methods: {},
+  methods: {
+    bindUserRole() {
+      UserSelectRole({ 
+        type: this.activeIndex,
+        phone: this.$store.state.userInfo.phone,
+        openid: this.$store.state.userInfo.openid
+      }).then(res => {
+        if (res.code == 200) {
+          uni.$u.toast("绑定成功");
+          this.$store.dispatch("getUserInfo");
+        }
+      });
+    }
+  },
   watch: {},
 
   // 组件周期函数--监听组件挂载完毕
@@ -63,6 +82,14 @@ export default {
 
 <style lang="scss" scoped>
 .bindIdentity {
+  &.alertWrap{
+    .title{
+      margin: 0 0 60rpx;
+    }
+    .tips{
+      margin-bottom: 60rpx !important;
+    }
+  }
   .title {
     font-weight: 500;
     font-size: 40rpx;

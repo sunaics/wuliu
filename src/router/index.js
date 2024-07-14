@@ -115,15 +115,13 @@ router.beforeEach((to, from, next) => {
     console.log("跳转开始", to);
     // 登录验证
     var userInfo = uni.getStorageSync("userInfo");
-    if (userInfo && userInfo.openId && !userInfo.phone) {
-        next('/');
-    }else if ((to.meta.auth || to.meta.auth === undefined) && !uni.getStorageSync("token")) {
+    console.log('userInfo===========', userInfo )
+    if (to.path !="/pages/login/login" && (!userInfo || (!userInfo.openid && userInfo.olOpenID))  ) {
         let fullPath = encodeURIComponent(to.fullPath);
-        console.log('fullPath', fullPath)
-        console.log('fullPath1', decodeURIComponent(fullPath))
         // #ifdef MP-WEIXIN
         next('/pages/login/login?redirect=' + fullPath);
         // #endif
+
         // #ifndef MP-WEIXIN
         next({
             path: '/pages/login/login?redirect=' + fullPath,
@@ -134,6 +132,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+    
 });
 
 // 全局路由后置守卫

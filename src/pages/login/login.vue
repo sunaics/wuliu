@@ -34,32 +34,40 @@ export default {
     // #endif
 
     var userInfo = uni.getStorageSync("userInfo");
-    if (!userInfo.openId) {
-      this.loginShow = false;
-      this.infoShow = true;
-    } else if (!userInfo.suplyid || !userInfo.carid) {
-      this.loginShow = false;
-      this.bindShow = true;
-    }
-  },
-  onShow() {},
-  methods: {
-    memberLogin(res) {
-      console.log(res);
-      // this.$store.commit("SET_USERINFO", res);
-      if (res.data.openId && (res.data.suplyid || res.data.carid)) {
-        uni.$emit("login", "登录成功！");
-        this.$Router.replaceAll("/");
-      } else if (!res.data.openId) {
+    if (userInfo) {
+      if (!userInfo.olOpenID) {
         this.loginShow = false;
         this.infoShow = true;
-      } else if (!res.data.suplyid || !res.data.carid) {
+      } else if (!userInfo.olSID || !userInfo.olCID) {
+        this.loginShow = false;
+        this.bindShow = true;
+      }
+    }
+
+  },
+  onShow() { },
+  methods: {
+    memberLogin(data) {
+      console.log(data);
+      this.$store.commit("SET_USERINFO", data);
+      if (data.openId && (data.olSID || data.olCID)) {
+        uni.showToast({
+          title: '登录成功',
+          duration: 2000
+        });
+        this.$Router.replaceAll("/");
+      } else if (!data.olOpenID) {
+        this.loginShow = false;
+        this.infoShow = true;
+      } else if (!data.olSID || !data.olCID) {
         this.loginShow = false;
         this.bindShow = true;
       }
     },
     quickLogin() {
-      this.$Router.replaceAll("/");
+      uni.reLaunch({
+        url: "/pages/index/index"
+      });
     }
   }
 };
@@ -73,8 +81,10 @@ export default {
   overflow: hidden;
   box-sizing: border-box;
   padding: 0 40rpx;
+
   .loginWrap {
     padding: 0 20rpx;
+
     .logo {
       width: 354rpx;
       height: 112rpx;

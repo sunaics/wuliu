@@ -4,7 +4,7 @@
     <!-- #ifdef MP-WEIXIN -->
     <div class="toux">
       <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-        <img class="avatar imgAll" :src="avatarUrl" />
+        <img class="avatar imgAll" :src="avatarUrl ? avatarUrl : defaultAvatar" />
       </button>
       <div class="icon">
         <u-icon name="plus-circle-fill" color="#4E5FF7" size="36rpx"></u-icon>
@@ -12,7 +12,7 @@
     </div>
     <div class="iptWrap flex_cc">
       <div class="name">昵称</div>
-      <input type="nickname" class="weui-input" placeholder="请输入昵称" />
+      <input type="nickname" class="weui-input" placeholder="请输入昵称" @change="changeName" />
     </div>
     <u-button
         type="primary"
@@ -20,7 +20,7 @@
         size="large"
         :customStyle="{fontSize: '36rpx',  boxShadow: '0rpx 8rpx 14rpx 0rpx rgba(0,19,194,0.14)'}"
         color="#4E5FF7"
-        @click="bindPhone"
+        @click="bindInfo"
       ></u-button>
     <!-- #endif -->
   </div>
@@ -33,17 +33,30 @@ export default {
   props: {},
   data() {
     return {
-      avatarUrl: require("@/static/img/toux.png")
+      defaultAvatar: require("@/static/img/toux.png"),
+      avatarUrl: "",
+      nickname: ""
     };
   },
   computed: {},
   methods: {
+    changeName(e){
+      this.nickname = e.detail.value
+    },
     onChooseAvatar(e) {
       console.log(e);
       this.avatarUrl = e.detail.avatarUrl
       uploadFile(e.detail.avatarUrl).then(res=>{
           console.log(res.url)//图片路径
         })
+    },
+    bindInfo(){
+      if(!this.avatarUrl){
+        return uni.$u.toast('请上传头像')
+      }else if(!this.nickname){
+        return uni.$u.toast('请输入昵称')
+      }
+      
     }
   },
   watch: {},
