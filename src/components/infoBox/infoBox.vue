@@ -1,5 +1,5 @@
 <template>
-  <div class="infoBox">
+  <div class="infoBox"  :class="{alertWrap : isAlert}">
     <div class="title">完善资料</div>
     <!-- #ifdef MP-WEIXIN -->
     <div class="toux">
@@ -28,13 +28,19 @@
 
 <script>
 import {uploadFile} from '@/utils/alioss.js'
+import {UserUpdateInfo} from '@/api/user.js'
 export default {
   name: "infoBox",
-  props: {},
+  props: {
+    isAlert: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       defaultAvatar: require("@/static/img/toux.png"),
-      avatarUrl: "",
+      avatarUrl: "https://q4.itc.cn/q_70/images03/20240528/298d4abda5e4469d98fa77e7cde46525.jpeg",
       nickname: ""
     };
   },
@@ -56,7 +62,13 @@ export default {
       }else if(!this.nickname){
         return uni.$u.toast('请输入昵称')
       }
-      
+      UserUpdateInfo({
+        openid: this.$store.state.userInfo.openid,
+        olName: this.nickname,
+        olPicFace: this.avatarUrl
+      }).then(res => {
+        console.log('bindInfo', res);
+      })
     }
   },
   watch: {},
@@ -78,6 +90,12 @@ export default {
 
 <style lang="scss" scoped>
 .infoBox {
+  &.alertWrap {
+    .title {
+      text-align: center;
+      margin: 0 0 60rpx;
+    }
+  }
   .title {
     font-weight: 500;
     font-size: 40rpx;

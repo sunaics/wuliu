@@ -59,17 +59,17 @@
           </u-form-item>
         </template>
         <u-form-item label="绑定手机" prop="mobile" borderBottom @click="bindMobile"> 
-          <div class="alginRight">{{ userInfo.mobile || '-'}}</div>
+          <div class="alginRight">{{ userData.phone || '-'}}</div>
           <u-icon slot="right" name="arrow-right"></u-icon>
         </u-form-item>
       </u--form>
     </div>
-    <div class="footWrap" :class="{'Iphone': isIphone}">
+    <!-- <div class="footWrap" :class="{'Iphone': isIphone}">
       <div class="foot pd20">
         <div class="footBtn" v-if="isEdit" @click="submit">保存</div>
         <div class="footBtn" v-else @click="isEdit=true">修改</div>
       </div>
-    </div>
+    </div> -->
 
     <u-picker
       @cancel="showLocal = false"
@@ -107,6 +107,7 @@
 
 <script>
 import { pageMixin } from "@/mixins";
+import { getUserIfo } from "@/api/user";
 import areas from "@/utils/areas.json";
 export default {
   components: {},
@@ -187,9 +188,20 @@ export default {
   computed: {
     isIphone() {
       return this.$store.state.isIphone;
+    },
+    userData(){
+      console.log(this.$store.state.userInfo);
+      return this.$store.state.userInfo
     }
   },
   methods: {
+    getUserIfo(){
+      getUserIfo({
+        id: this.$store.state.userInfo.id
+      }).then(res=>{
+        console.log(res);
+      })
+    },
     submit() {
       this.$refs.uForm
         .validate()
@@ -350,7 +362,9 @@ export default {
   watch: {},
 
   // 页面周期函数--监听页面加载
-  onLoad() {},
+  onLoad() {
+    this.getUserIfo()
+  },
   // 页面周期函数--监听页面初次渲染完成
   onReady() {},
   // 页面周期函数--监听页面显示(not-nvue)

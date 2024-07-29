@@ -1,14 +1,10 @@
 <script>
+
 export default {
   onLaunch: function() {
     let _self = this;
     wx.getSystemInfo({
       success: res => {
-        console.log("res.safeArea.bottom", res);
-        console.log(
-          "res.safeArea.bottom",
-          res.screenHeight - res.safeArea.bottom
-        );
         if (res.screenHeight - res.safeArea.bottom) {
           this.$store.commit("SET_ISIPHONE", true);
         } else {
@@ -16,6 +12,7 @@ export default {
         }
       }
     });
+    
   },
   onShow: function() {
     console.log("App Show");

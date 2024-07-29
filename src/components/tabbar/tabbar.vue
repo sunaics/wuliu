@@ -1,8 +1,8 @@
 <template>
   <div class="tabbar_wrap">
-    <div  class="tabbar tabbar_bg flex_cc" :class="{'Iphone': isIphone}"></div>
-    <div class="tabbar flex_cc" :class="{'Iphone': isIphone}">
-      <div class="tabbar_item" :class="{'active': activeIndex == 1}">
+    <div class="tabbar tabbar_bg flex_cc" :class="{ 'Iphone': isIphone }"></div>
+    <div class="tabbar flex_cc" :class="{ 'Iphone': isIphone }">
+      <div class="tabbar_item" :class="{ 'active': activeIndex == 1 }">
         <div class="tabbar_box flex_cc" @click="tabbarClick(1)">
           <div class="icon_wrap">
             <div class="icon_box">
@@ -13,7 +13,7 @@
           <div class="name">运单</div>
         </div>
       </div>
-      <div class="tabbar_item" :class="{'active': activeIndex == 2}">
+      <div class="tabbar_item" :class="{ 'active': activeIndex == 2 }">
         <div class="tabbar_box flex_cc" @click="tabbarClick(2)">
           <div class="icon_wrap">
             <div class="icon_box">
@@ -46,26 +46,48 @@ export default {
     }
   },
   methods: {
+    setTitle(index) {
+      if (index == 2) {
+        uni.setNavigationBarColor({
+          frontColor: "#ffffff", //文字颜色
+          backgroundColor: "#314E9B" //底部背景色
+        });
+        uni.setNavigationBarTitle({
+          title: "我的"
+        });
+      } else {
+        uni.setNavigationBarColor({
+          frontColor: "#000000", //文字颜色
+          backgroundColor: "#314E9B" //底部背景色
+        });
+        uni.setNavigationBarTitle({
+          title: "运单"
+        });
+      }
+    },
     tabbarClick(index) {
       if (index === this.activeIndex) return;
+      this.setTitle(index);
       this.$emit("changeIndex", index);
       this.$store.commit("SET_ACTIVEPAGES", index);
-    }
+    },
   },
-  watch: {},
 
   // 组件周期函数--监听组件挂载完毕
-  mounted() {},
+  mounted() {
+    console.log("====================",this.activeIndex);
+    this.setTitle(this.activeIndex);
+  },
   // 组件周期函数--监听组件数据更新之前
-  beforeUpdate() {},
+  beforeUpdate() { },
   // 组件周期函数--监听组件数据更新之后
-  updated() {},
+  updated() { },
   // 组件周期函数--监听组件激活(显示)
-  activated() {},
+  activated() { },
   // 组件周期函数--监听组件停用(隐藏)
-  deactivated() {},
+  deactivated() { },
   // 组件周期函数--监听组件销毁之前
-  beforeDestroy() {}
+  beforeDestroy() { }
 };
 </script>
 
@@ -79,9 +101,11 @@ export default {
   background-color: #fff;
   padding: 10px 0;
   box-shadow: 0rpx -2rpx 4rpx 0rpx rgba(238, 238, 238, 0.6);
+
   .tabbar_item {
     flex: 1;
     position: relative;
+
     .icon_wrap {
       width: 84rpx;
       height: 84rpx;
@@ -92,14 +116,17 @@ export default {
       align-items: flex-end;
       margin-top: -50rpx;
     }
+
     .tabbar_box {
       flex-wrap: wrap;
     }
+
     img {
       width: 48rpx;
       height: 48rpx;
       vertical-align: top;
     }
+
     .name {
       width: 100%;
       text-align: center;
@@ -109,11 +136,13 @@ export default {
       margin-top: 2rpx;
     }
   }
+
   .active {
     .name {
       color: #4e5ff7;
       // margin-top: -2rpx;
     }
+
     .icon_wrap {
       // width: 84rpx;
       // height: 84rpx;
@@ -123,6 +152,7 @@ export default {
       // display: flex;
       // justify-content: center;
       align-items: center;
+
       .icon_box {
         width: 72rpx;
         height: 72rpx;
@@ -135,10 +165,12 @@ export default {
     }
   }
 }
-.tabbar_bg{
+
+.tabbar_bg {
   position: static;
   background-color: rgba(0, 0, 0, 0);
 }
+
 .Iphone {
   padding-bottom: 70rpx;
 }

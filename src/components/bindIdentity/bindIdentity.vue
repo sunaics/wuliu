@@ -56,10 +56,14 @@ export default {
         phone: this.$store.state.userInfo.phone,
         openid: this.$store.state.userInfo.openid
       }).then(res => {
-        if (res.code == 200) {
-          uni.$u.toast("绑定成功");
-          this.$store.dispatch("getUserInfo");
-        }
+        console.log('bindUserRole', res);
+        uni.$u.toast("绑定成功");
+        this.$store.commit("SET_USERINFO", {
+          ...this.$store.state.userInfo,
+          ...res.data[0],
+          olCID: this.activeIndex === 0 ? res.model.carid :  '',
+          olSID: this.activeIndex === 1 ? res.model.supplyid :  0
+        });
       });
     }
   },

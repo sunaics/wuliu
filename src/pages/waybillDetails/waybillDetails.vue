@@ -257,6 +257,7 @@
 </template>
 
 <script>
+import { MyDispatchBillDetail, SetDispatchStatusPosition } from "@/api/order";
 export default {
   options: {
     styleIsolation: "shared" // 解除样式隔离
@@ -337,7 +338,33 @@ export default {
     };
   },
   computed: {},
+  onLoad() {
+    console.log("111111111111111111111111111111111");
+    uni.getLocation({
+      success: res => {
+        console.log('getLocation', res);
+      }
+    });
+  },
   methods: {
+    MyDispatchBillDetail() {
+      MyDispatchBillDetail({ id: this.$route.query.id }).then(res => {
+        this.details = res.data;
+      });
+    },
+    SetDispatchStatusPosition() {
+      // dbNum	varchar	运单号	true	
+      // uid	int	用户ID	true	司机或供应商ID
+      // state	int	状态	true	
+      // address	varchar	位置	true	上报位置
+      // pic	varchar	现场图片	true	同一级图片用“|”相隔，每组用“,”相隔
+
+      SetDispatchStatusPosition({
+        dbNum
+      }).then(res => {
+
+      });
+    },
     // 删除图片
     deletePic(event) {
       this[`fileList${event.name}`].splice(event.index, 1);
@@ -388,11 +415,10 @@ export default {
     }
   },
   watch: {},
-
-  // 页面周期函数--监听页面加载
-  onLoad() {},
   // 页面周期函数--监听页面初次渲染完成
-  onReady() {},
+  onReady() {
+    
+  },
   // 页面周期函数--监听页面显示(not-nvue)
   onShow() {},
   // 页面周期函数--监听页面隐藏

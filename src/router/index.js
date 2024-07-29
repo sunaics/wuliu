@@ -93,7 +93,7 @@ const ROUTES = [
         path: "/pages/bindPhone/bindPhone",
         name: "bindPhone",
         meta: {
-            title: "绑定手机号",
+            title: "更换手机号",
             auth: true
         }
     },
@@ -112,10 +112,8 @@ const router = createRouter({
 
 //全局路由前置守卫
 router.beforeEach((to, from, next) => {
-    console.log("跳转开始", to);
     // 登录验证
     var userInfo = uni.getStorageSync("userInfo");
-    console.log('userInfo===========', userInfo )
     if (to.path !="/pages/login/login" && (!userInfo || (!userInfo.openid && userInfo.olOpenID))  ) {
         let fullPath = encodeURIComponent(to.fullPath);
         // #ifdef MP-WEIXIN
@@ -136,9 +134,9 @@ router.beforeEach((to, from, next) => {
 });
 
 // 全局路由后置守卫
-router.afterEach((to, from) => {
-    console.log("跳转结束");
-});
+// router.afterEach((to, from) => {
+//     console.log("跳转结束");
+// });
 
 export { router, RouterMount };
 

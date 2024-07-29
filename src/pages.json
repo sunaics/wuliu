@@ -64,7 +64,7 @@
 		{
 			"path": "pages/bindPhone/bindPhone",
 			"style": {
-				"navigationBarTitleText": "绑定手机号"
+				"navigationBarTitleText": "更换手机号"
 			}
 		},
 		{
