@@ -7,7 +7,7 @@
       <LoginBox :isBind="false" @memberLogin="memberLogin" @quickLogin="quickLogin"></LoginBox>
     </div>
     <BindIdentity v-if="bindShow"></BindIdentity>
-    <InfoBox v-if="infoShow"></InfoBox>
+    <!-- <InfoBox v-if="infoShow"></InfoBox> -->
   </div>
 </template>
 
@@ -35,10 +35,7 @@ export default {
 
     var userInfo = uni.getStorageSync("userInfo");
     if (userInfo) {
-      if (!userInfo.olOpenID) {
-        this.loginShow = false;
-        this.infoShow = true;
-      } else if (!userInfo.olSID || !userInfo.olCID) {
+       if (!userInfo.olSID || !userInfo.olCID) {
         this.loginShow = false;
         this.bindShow = true;
       }
@@ -56,9 +53,6 @@ export default {
           duration: 2000
         });
         this.$Router.replaceAll("/");
-      } else if (!data.olOpenID) {
-        this.loginShow = false;
-        this.infoShow = true;
       } else if (!data.olSID || !data.olCID) {
         this.loginShow = false;
         this.bindShow = true;

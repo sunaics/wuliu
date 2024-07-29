@@ -1,9 +1,10 @@
 <template>
   <div class="bindPhone pd20">
     <div class="box pdlr20">
-      <div class="tit"></div>
+      <div class="tit">输入新手机号</div>
       <div class="wrap">
-        <u--form labelWidth="0" :model="userInfo" :rules="rules" ref="uForm">
+        <loginBox :isBind="true" ref="bindPhone"></loginBox>
+        <!-- <u--form labelWidth="0" :model="userInfo" :rules="rules" ref="uForm">
           <u-form-item prop="phone" borderBottom>
             <div class="flex_ac iptWrap">
               <div class="leftIcon">
@@ -19,25 +20,43 @@
               </div>
               <u--input v-model="userInfo.code" border="none" placeholder="请输入验证码"></u--input>
               <div style="width: 176rpx;">
-                <u-button type="primary" :plain="true" text="获取验证码" color="#4e5ff7" :customStyle="{
+                <u-button
+                  type="primary"
+                  :plain="true"
+                  text="获取验证码"
+                  color="#4e5ff7"
+                  :customStyle="{
                   fontSize: '24rpx'
-                }"></u-button>
+                }"
+                ></u-button>
               </div>
-              
             </div>
           </u-form-item>
-        </u--form>
+        </u--form>-->
       </div>
     </div>
-    <div class="foot " >
-        <div class="footBtn" @click="submit">确认换绑</div>
-      </div>
+    <div class="foot">
+      <!-- <div class="footBtn" @click="submit">确认换绑</div> -->
+      <u-button
+        type="primary"
+        text="确认换绑"
+        size="large"
+        :customStyle="{ fontSize: '32rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
+        color="#4E5FF7"
+        @click="submit"
+        :loading="loading"
+      ></u-button>
+    </div>
   </div>
 </template>
 
 <script>
+import LoginBox from "@/components/loginBox/loginBox";
+import { resetphone } from "@/api/user";
 export default {
-  components: {},
+  components: {
+    loginBox: LoginBox
+  },
   data() {
     return {
       userInfo: {
@@ -70,11 +89,37 @@ export default {
             trigger: ["change", "blur"]
           }
         ]
-      }
+      },
+      btnDisable: true,
+      loading: false
     };
   },
   computed: {},
-  methods: {},
+  methods: {
+    submit() {
+      this.loading = true;
+      if (this.$refs.bindPhone.verification()) {
+        resetphone({
+          mobile: this.$refs.bindPhone.formData.phone,
+          code: this.$refs.bindPhone.formData.code,
+          auid: this.$store.state.userInfo.auid,
+          type: 1
+        })
+          .then(res => {
+            this.$store.commit("SET_USERINFO", {
+              ...this.$store.state.userInfo,
+              phone: this.$refs.bindPhone.formData.phone
+            });
+            this.loading = false;
+            uni.$u.toast("换绑成功");
+            this.$Router.back();
+          })
+          .catch(err => {
+            this.loading = false;
+          });
+      }
+    }
+  },
   watch: {},
 
   // 页面周期函数--监听页面加载
@@ -100,6 +145,13 @@ export default {
 
 <style lang="scss" scoped>
 .bindPhone {
+  .tit {
+    font-weight: 500;
+    font-size: 32rpx;
+    color: #333333;
+    line-height: 44rpx;
+    padding-top: 30rpx;
+  }
   .box {
     background-color: #fff;
     border-radius: 8rpx;
@@ -109,7 +161,7 @@ export default {
     height: 36rpx;
     margin-right: 18rpx;
   }
-  .iptWrap{
+  .iptWrap {
     width: 100%;
   }
   .foot {
@@ -125,6 +177,11 @@ export default {
       font-size: 32rpx;
       color: #ffffff;
       line-height: 84rpx;
+      &.btnDisable {
+        background: #e5e5e5;
+        box-shadow: 0rpx 8rpx 14rpx 0rpx rgba(144, 144, 144, 0.06);
+        color: #999999;
+      }
     }
   }
 }

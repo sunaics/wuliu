@@ -116,12 +116,14 @@
         color="#999"
       />
     </div>
-    <orderFilter ref="orderFilter"></orderFilter>
+    <orderFilter ref="orderFilter" @submitData="submitData"></orderFilter>
   </div>
 </template>
 
 <script>
 import orderFilter from "@/components/orderFilter/orderFilter.vue";
+import { GetMyDispatchList } from "@/api/order.js";
+import { formatDate, getDateForMonthOffset } from "@/utils/formatDate";
 export default {
   options: {
     styleIsolation: "shared" // 解除样式隔离
@@ -190,14 +192,53 @@ export default {
         loadmore: "上拉加载",
         loading: "努力加载中"
       },
-      overlayShow: true
+      overlayShow: true,
+      pageData: {
+        pageSize: 10,
+        pageNum: 1,
+        total: 0
+      },
+      
     };
   },
   onLoad() {
     // 获取token
     console.log(this.$store.state.token);
   },
+  computed:{
+    userInfo() {
+      if(this.$store.state.userInfo.olSID || this.$store.state.userInfo.olCID) {
+        this.GetMyDispatchList();
+      }
+      return this.$store.state.userInfo;
+    }
+  },
+  created() {
+    // this.getDispatchList();
+  },
   methods: {
+    submitData(data){
+      console.log(data)
+      this.startDate = data.startDate
+      this.endDate = data.endDate
+      if(data.selectActive){
+        this.endDate = formatDate(new Date());
+        var num = data.selectActive == 2 ? 3 : data.selectActive == 3 ? 12 : 1;
+        this.startDate = getDateForMonthOffset(num);
+      }
+      console.log(this.startDate, this.endDate)
+    },
+    GetMyDispatchList(){
+      GetMyDispatchList({
+        dbStatus: this.tabCurrent,
+        dbSID: this.$store.state.userInfo.olSID,
+        dbCID: this.$store.state.userInfo.olCID,
+        page: this.pageData.pageNum,
+        pagesize: this.pageData.pageSize
+      }).then(res => {
+        console.log("GetSupplyDispatchList", res);
+      });
+    },
     tabChange(item) {
       console.log(item);
       this.tabCurrent = item.index;

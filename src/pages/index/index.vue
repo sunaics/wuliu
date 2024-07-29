@@ -8,7 +8,7 @@
       :titleClor="activeIndex == 1 ? '#333333' : '#ffffff'"
     ></Navbar>
     <Waybill v-show="activeIndex == 1" ref="waybill"></Waybill>
-    <Mine v-show="activeIndex == 2"></Mine>
+    <Mine v-show="activeIndex == 2"  @changeIndex="changeIndex"></Mine>
     <Tabbar :activeIndex="activeIndex" @changeIndex="changeIndex"></Tabbar>
 
     <u-overlay :show="overlayShow" @click="show = false">
@@ -50,35 +50,18 @@ export default {
     },
     overlayShow() {
       let userInfo = this.$store.state.userInfo || {};
-      return !userInfo.phone || ( !userInfo.olSID && !userInfo.olCID)
+      return !userInfo.phone || ( !userInfo.olSID && !userInfo.olCID) || !userInfo.name;
     }
   },
   methods: {
     urlTobase64,
     changeIndex(index) {
       this.activeIndex = index;
-      if (index == 2) {
-        uni.setNavigationBarColor({
-          frontColor: "#ffffff", //文字颜色
-          backgroundColor: "#314E9B" //底部背景色
-        });
-        this.setTitle('我的')
-      } else {
-        uni.setNavigationBarColor({
-          frontColor: "#000000", //文字颜色
-          backgroundColor: "#314E9B" //底部背景色
-        });
-        this.setTitle('运单')
-      }
     },
     getNavbarHeight(height) {
       this.navbarHeight = height;
     },
-    setTitle(title){
-      uni.setNavigationBarTitle({
-          title
-        });
-    }
+   
   },
   watch: {
     navbarHeight(val) {
@@ -88,7 +71,10 @@ export default {
 
   // 页面周期函数--监听页面加载
   onLoad() {
-    this.setTitle('运单')
+    
+
+    var date = uni.$u.timeFrom('7天前', false );
+    console.log('date', date)
   },
   // 页面周期函数--监听页面初次渲染完成
   onReady() {

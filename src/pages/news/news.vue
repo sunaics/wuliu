@@ -1,59 +1,75 @@
 <template>
   <div class="news pd20">
+    <u-loading-page :loading="loading"></u-loading-page>
     <div class="tit">全部已读</div>
     <div class="list">
-      <div class="items pd20" v-for="item in list" :key="item.id">
+      <div class="items pd20" v-for="(item, index) in list" :key="item.id" @click="item.n_read ? '' :readNotice(item, index)">
         <div class="top flex_ac_sb">
-          <div class="t_left" :class="item.isRead ? 't_left_read' : ''">运输完成</div>
-          <div class="t_right">{{item.date}}</div>
+          <div class="t_left" :class="item.isRead ? 't_left_read' : ''">{{item.n_title}}</div>
+          <div class="t_right">{{item.adddate}}</div>
         </div>
         <div class="foot flex_ac_sb">
           <div class="f_left">
-            <div>您的运单（运单号：{{item.codeNum}}）</div>
-            <div>由{{item.fromCity}}-{{item.toCity}}，已运输完成。</div>
+            <div>{{item.n_context}}</div>
+            <!-- <div>您的运单（运单号：{{item.codeNum}}）</div> -->
+            <!-- <div>由{{item.fromCity}}-{{item.toCity}}，已运输完成。</div> -->
           </div>
-          <div class="f_right" v-if="item.isRead">
-            <u-badge :isDot="true" type="success" bgColor="#FF4E4E"></u-badge>
+          <div class="f_right" v-if="!item.n_read">
+            <u-badge :isDot="true" type="success" bgcolor="#FF4E4E"></u-badge>
           </div>
         </div>
       </div>
     </div>
+    <u-loadmore :status="status" />
   </div>
 </template>
 
 <script>
+import { myNotice, readNotice } from "@/api/user";
 export default {
   components: {},
   data() {
     return {
-      list: [
-        {
-          id: 1,
-          status: 1,
-          codeNum: "S2106231431977432",
-          fromCity: "上海",
-          toCity: "北京",
-          date: "2021-06-23 14:31:57",
-          isRead: true
-        },
-        {
-          id: 1,
-          status: 1,
-          codeNum: "S2106231431977432",
-          fromCity: "南京",
-          toCity: "合肥",
-          date: "2021-06-23 14:31:57",
-          isRead: false
-        }
-      ]
+      loading: true,
+      list: [],
+      pageData: {
+        pageIndex: 1,
+        pageSize: 10,
+        total: 0
+      },
+      status: "loadmore" // loadmore, nomore, loading
     };
   },
   computed: {},
-  methods: {},
+  methods: {
+    myNotice() {
+      myNotice({
+        pageIndex: this.pageData.pageIndex,
+        pageSize: this.pageData.pageSize,
+        auid: this.$store.state.userInfo.auid
+      }).then(res => {
+        console.log(res);
+        this.list = [...this.list, ...res.data];
+        // this.pageData.total = res.total;
+        this.status = "loadmore";
+        this.loading = false;
+      });
+    },
+    readNotice(item, index) {
+      readNotice({
+        auid: this.$store.state.userInfo.auid,
+        id: item.id
+      }).then(res => {
+        this.list[index].n_read =  true;
+      });
+    }
+  },
   watch: {},
 
   // 页面周期函数--监听页面加载
-  onLoad() {},
+  onLoad() {
+    this.myNotice();
+  },
   // 页面周期函数--监听页面初次渲染完成
   onReady() {},
   // 页面周期函数--监听页面显示(not-nvue)
@@ -61,11 +77,19 @@ export default {
   // 页面周期函数--监听页面隐藏
   onHide() {},
   // 页面周期函数--监听页面卸载
-  onUnload() {}
+  onUnload() {},
   // 页面处理函数--监听用户下拉动作
   // onPullDownRefresh() { uni.stopPullDownRefresh(); },
   // 页面处理函数--监听用户上拉触底
-  // onReachBottom() {},
+  onReachBottom() {
+    if (this.pageData.pageIndex >= this.pageData.total) {
+      this.status = "nomore";
+    } else {
+      this.pageData.pageIndex++;
+      this.myNotice();
+      this.status = "loading";
+    }
+  }
   // 页面处理函数--监听页面滚动(not-nvue)
   // onPageScroll(event) {},
   // 页面处理函数--用户点击右上角分享
@@ -95,7 +119,7 @@ export default {
       color: #999999;
       line-height: 44rpx;
     }
-    .t_left_read{
+    .t_left_read {
       color: #333333;
     }
     .t_right {

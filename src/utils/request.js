@@ -1,4 +1,6 @@
 const md5 = require('md5');
+import { getToken } from '@/utils/getToken'
+getToken()
 // request.js
 const api = "https://api.zhuliscm.com"
 
@@ -12,7 +14,7 @@ function request(vm) {
 	})
 
 	// 请求拦截
-	uni.$u.http.interceptors.request.use((config) => { // 可使用async await 做异步操作
+	uni.$u.http.interceptors.request.use(async (config) => { // 可使用async await 做异步操作
 		// 初始化请求拦截器时，会执行此方法，此时data为undefined，赋予默认{}
 		console.log(config)
 		config.header.authorization = vm.$store.state.authorization

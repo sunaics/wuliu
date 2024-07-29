@@ -12,8 +12,8 @@
               <img class="imgAll" src="../../static/img/myBg.png" alt />
             </div>
             <div class="top_user_left_info">
-              <div class="top_user_left_info_name">用户名称</div>
-              <div class="top_user_left_info_phone">18888888888</div>
+              <div class="top_user_left_info_name">{{userInfo.name}}</div>
+              <div class="top_user_left_info_phone">{{userInfo.phone}}</div>
             </div>
           </div>
 
@@ -82,13 +82,16 @@ export default {
   computed: {
     mineBg() {
       return this.$store.state.mineBg;
+    },
+    userInfo() {
+      return this.$store.state.userInfo;
     }
   },
   methods: {
     setLink(type) {
       switch (type) {
         case 1:
-          this.$Router.push("/pages/myWaybill/myWaybill");
+        this.$emit("changeIndex", 1);
           break;
         case 2:
           this.$Router.push("/pages/authentication/authentication");
