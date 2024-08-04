@@ -29,7 +29,7 @@
   
     // 设置新的月份，`setMonth()`接受的参数是0-based的，即0表示一月，11表示十二月
     // `monthOffset`可以是正数或负数，正数表示未来，负数表示过去
-    currentDate.setMonth(currentDate.getMonth() + monthOffset);
+    currentDate.setMonth(currentDate.getMonth() - monthOffset);
   
     // 提取年、月、日、时、分、秒
     var year = currentDate.getFullYear();

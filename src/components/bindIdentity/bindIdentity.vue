@@ -61,8 +61,10 @@ export default {
         this.$store.commit("SET_USERINFO", {
           ...this.$store.state.userInfo,
           ...res.data[0],
-          olCID: this.activeIndex === 0 ? res.model.carid :  '',
-          olSID: this.activeIndex === 1 ? res.model.supplyid :  0
+          // olDID: this.activeIndex === 0 ? res.model.carid :  '',
+          // olSID: this.activeIndex === 1 ? res.model.supplyid :  0
+             olDID: this.activeIndex === 0 ? 1 :  '',
+          olSID: this.activeIndex === 1 ? 1 :  0
         });
       });
     }

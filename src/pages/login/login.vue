@@ -35,7 +35,7 @@ export default {
 
     var userInfo = uni.getStorageSync("userInfo");
     if (userInfo) {
-       if (!userInfo.olSID || !userInfo.olCID) {
+      if (!userInfo.olSID || !userInfo.olDID) {
         this.loginShow = false;
         this.bindShow = true;
       }
@@ -47,13 +47,16 @@ export default {
     memberLogin(data) {
       console.log(data);
       this.$store.commit("SET_USERINFO", data);
-      if (data.openId && (data.olSID || data.olCID)) {
+      if (data.openid && (data.olSID || data.olDID)) {
         uni.showToast({
           title: '登录成功',
-          duration: 2000
+          duration: 2000,
+          icon: "none"
         });
-        this.$Router.replaceAll("/");
-      } else if (!data.olSID || !data.olCID) {
+        uni.reLaunch({
+          url: "/pages/index/index"
+        });
+      } else if (!data.olSID || !data.olDID) {
         this.loginShow = false;
         this.bindShow = true;
       }

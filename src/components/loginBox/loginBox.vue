@@ -1,5 +1,5 @@
 <template>
-  <div class="loginBox" :class="{alertWrap : isAlert}">
+  <div class="loginBox" :class="{ alertWrap: isAlert }">
     <div class="title">登录</div>
     <div class="l_list">
       <u--form labelWidth="55px" :model="formData" ref="uForm">
@@ -10,51 +10,25 @@
           <div class="flex_ac_sb">
             <u--input v-model="formData.code" inputAlign="left" border="none" placeholder="请输入验证码"></u--input>
             <div style="width: 230rpx;">
-              <u-button
-                type="primary"
-                :plain="true"
-                :text="btnText"
-                color="#4e5ff7"
-                :customStyle="{
-        fontSize: '24rpx'
-      }"
-                :disabled="btnDisabled"
-                @click="getCode"
-              ></u-button>
+              <u-button type="primary" :plain="true" :text="btnText" color="#4e5ff7" :customStyle="{
+    fontSize: '24rpx'
+  }" :disabled="btnDisabled" @click="getCode"></u-button>
             </div>
           </div>
         </u-form-item>
       </u--form>
     </div>
     <div class="btns" v-if="!isBind">
-      <u-button
-        v-if="isAlert"
-        type="primary"
-        text="绑定手机"
-        size="large"
-        :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
-        color="#4E5FF7"
-        @click="bindPhone"
-      ></u-button>
+      <u-button v-if="isAlert" type="primary" text="绑定手机" size="large"
+        :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4E5FF7"
+        @click="bindPhone"></u-button>
       <template v-else>
-        <u-button
-          type="primary"
-          text="立即登录"
-          size="large"
-          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
-          color="#4E5FF7"
-          @click="login"
-          :loading="loading"
-          :loadingText="loadingText"
-        ></u-button>
-        <u-button
-          type="primary"
-          text="快捷登录"
-          size="large"
-          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
-          color="#4FC57A"
-          @click="quickLogin"
-        ></u-button>
+        <u-button type="primary" text="立即登录" size="large"
+          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4E5FF7" @click="login"
+          :loading="loading" :loadingText="loadingText"></u-button>
+        <u-button type="primary" text="快捷登录" size="large"
+          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4FC57A"
+          @click="quickLogin"></u-button>
       </template>
     </div>
   </div>
@@ -172,7 +146,25 @@ export default {
       memberLogin(this.formData)
         .then(res => {
           console.log("res", res);
-          this.getOpenId(res.data[0]);
+          let data = res.data ? res.data[0] : {};
+          let model = res.model ? res.model[0] : {};
+          let userInfo = {
+            ...data,
+            ...model,
+            openid: model.olOpenID || data.qsOpenID,
+            avatar: model.olPicFace || "",
+            name: model.olName || ""
+          }
+          if (userInfo.openid) {
+            this.$emit("memberLogin", {
+              ...userInfo,
+              phone: this.formData.phone
+            });
+            this.loading = false;
+          } else {
+            this.getOpenId(res.data[0]);
+          }
+
         })
         .catch(err => {
           this.loading = false;
@@ -184,15 +176,19 @@ export default {
         code: this.wxCode
       })
         .then(res => {
-          var user = res.data ? res.data[0] : {};
-          var data = {
-            ...res.model,
-            ...user,
-            phone: user.qsLinkPhone || user.olphone || "",
-            olCID: res.model.carid !== "0" ? res.model.carid : "",
-            olSID: res.model.supplyid !== "0" ? res.model.supplyid : "",
+          let data = res.data ? res.data[0] : {};
+          let model = res.model ? res.model[0] : {};
+          var userInfo = {
+            ...data,
+            ...model,
+            phone: data.qsLinkPhone || data.olphone || "",
+            olDID: model.olDID != 0 ? model.olDID : "",
+            olSID: model.olSID !== 0 ? model.olSID : "",
+            openid: model.olOpenID || data.olOpenID || "",
+            avatar: model.olPicFace || "",
+            name: model.olName || ""
           };
-          this.$store.commit("SET_USERINFO", data);
+          this.$store.commit("SET_USERINFO", userInfo);
           uni.showToast({
             title: "登录成功",
             duration: 2000
@@ -242,15 +238,15 @@ export default {
     this.getWeiXinCode();
   },
   // 组件周期函数--监听组件数据更新之前
-  beforeUpdate() {},
+  beforeUpdate() { },
   // 组件周期函数--监听组件数据更新之后
-  updated() {},
+  updated() { },
   // 组件周期函数--监听组件激活(显示)
-  activated() {},
+  activated() { },
   // 组件周期函数--监听组件停用(隐藏)
-  deactivated() {},
+  deactivated() { },
   // 组件周期函数--监听组件销毁之前
-  beforeDestroy() {}
+  beforeDestroy() { }
 };
 </script>
 
@@ -259,6 +255,7 @@ export default {
   .title {
     display: none;
   }
+
   &.alertWrap .title {
     display: block;
     font-size: 40rpx;

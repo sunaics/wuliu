@@ -50,7 +50,7 @@ export default {
     },
     overlayShow() {
       let userInfo = this.$store.state.userInfo || {};
-      return !userInfo.phone || ( !userInfo.olSID && !userInfo.olCID) || !userInfo.name;
+      return !userInfo.phone || ( !userInfo.olSID && !userInfo.olDID) || !userInfo.name;
     }
   },
   methods: {

@@ -114,7 +114,8 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     // 登录验证
     var userInfo = uni.getStorageSync("userInfo");
-    if (to.path !="/pages/login/login" && (!userInfo || (!userInfo.openid && userInfo.olOpenID))  ) {
+    console.log('userInfo',userInfo)
+    if (to.path !="/pages/login/login" && (!userInfo || !userInfo.openid )  ) {
         let fullPath = encodeURIComponent(to.fullPath);
         // #ifdef MP-WEIXIN
         next('/pages/login/login?redirect=' + fullPath);

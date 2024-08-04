@@ -9,7 +9,8 @@
         <div class="top_user flex_sb">
           <div class="top_user_left flex_cc">
             <div class="top_user_left_img">
-              <img class="imgAll" src="../../static/img/myBg.png" alt />
+              <!-- <img class="imgAll" :src="userInfo.avatar" alt /> -->
+              <u-avatar size="124rpx"  :src="userInfo.avatar"></u-avatar>
             </div>
             <div class="top_user_left_info">
               <div class="top_user_left_info_name">{{userInfo.name}}</div>

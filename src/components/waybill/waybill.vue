@@ -9,23 +9,23 @@
           <div class="top_tit">运单数据</div>
           <div class="top_numList flex_cc">
             <div class="top_numList_item">
-              <div class="top_item_num">12</div>
+              <div class="top_item_num">{{model.totalweek}}</div>
               <div class="top_item_name">本周运单量</div>
             </div>
             <div class="top_numList_item">
-              <div class="top_item_num">36</div>
-              <div class="top_item_name">本周运单量</div>
+              <div class="top_item_num">{{model.totalmonth}}</div>
+              <div class="top_item_name">本月运单量</div>
             </div>
             <div class="top_numList_item">
-              <div class="top_item_num">125</div>
-              <div class="top_item_name">本周运单量</div>
+              <div class="top_item_num">{{model.totalyear}}</div>
+              <div class="top_item_name">本年运单量</div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="search pdlr24">
-      <u-search shape="round" bg-color="#F7F7F7"></u-search>
+      <u-search shape="round" bg-color="#F7F7F7"  v-model="searchData.keywords" @search="goSearch" @custom="goSearch"></u-search>
     </div>
     <div class="tabs flex_sb">
       <div style="width: 80%;">
@@ -50,50 +50,55 @@
         </div>
       </div>
     </div>
+    
     <div class="list">
+      <div class="datas flex_sb">
+      <div class="dl">未结束运单：<span>{{model.unfinished}}</span></div>
+      <div class="dr">已结束运单：<span>{{model.finished}}</span></div>
+    </div>
       <div class="item" v-for="item in list" :key="item.id">
         <div @click="goDetails(item)">
           <div class="labels">
-            <div class="label1 label" v-if="item.status == 1">待运输</div>
-            <div class="label2 label" v-if="item.status == 2">运输中</div>
-            <div class="label3 label" v-if="item.status == 3">已完成</div>
+            <div class="label1 label" v-if="item.dbStatus == 1">待运输</div>
+            <div class="label2 label" v-if="item.dbStatus == 2">运输中</div>
+            <div class="label3 label" v-if="item.dbStatus == 3">已完成</div>
           </div>
           <div class="item_top flex">
-            运单号：{{ item.waybillNo }}
+            运单号：{{ item.dbNumber }}
             <img
               class="copy"
-              @click="copyText(item.waybillNo)"
+              @click.stop="copyText(item.dbNumber)"
               src="../../static/img/copy.png"
               alt
             />
           </div>
           <div class="item_city flex_cc">
             <div class="item_user">
-              <div class="item_u_city">{{ item.fromCity }}</div>
-              <div class="item_u_name">{{ item.fromUser }}</div>
+              <div class="item_u_city">{{ item.dbSCity }}</div>
+              <div class="item_u_name">{{ item.dbSLinkName }}</div>
             </div>
             <div class="item_arrow">
               <div class="item_ct">
-                <img class="imgAll" v-if="item.status == 1" src="../../static/img/status1.png" alt />
-                <img class="imgAll" v-if="item.status == 2" src="../../static/img/status2.png" alt />
-                <img class="imgAll" v-if="item.status == 3" src="../../static/img/status3.png" alt />
+                <img class="imgAll" v-if="item.dbStatus == 1" src="../../static/img/status1.png" alt />
+                <img class="imgAll" v-if="item.dbStatus == 2" src="../../static/img/status2.png" alt />
+                <img class="imgAll" v-if="item.dbStatus == 3" src="../../static/img/status3.png" alt />
               </div>
               <div class="item_cb">
-                <div class="item_label" v-if="item.status == 1">待运输</div>
-                <div class="item_label" v-if="item.status == 2">运输中</div>
-                <div class="item_label" v-if="item.status == 3">已完成</div>
+                <div class="item_label" v-if="item.dbStatus == 1">待运输</div>
+                <div class="item_label" v-if="item.dbStatus == 2">运输中</div>
+                <div class="item_label" v-if="item.dbStatus == 3">已完成</div>
               </div>
             </div>
             <div class="item_user">
-              <div class="item_u_city">{{ item.toCity }}</div>
-              <div class="item_u_name">{{ item.toUser }}</div>
+              <div class="item_u_city">{{ item.dbECity }}</div>
+              <div class="item_u_name">{{ item.dbELinkName }}</div>
             </div>
           </div>
           <div class="item_text item_text1 flex">
             <div class="item_text_name">增值服务：</div>
-            <div>{{ item.serves }}</div>
+            <div>{{ item.Addservices }}</div>
           </div>
-          <div class="item_text item_text2">下单时间：{{ item.orderTime }}</div>
+          <div class="item_text item_text2">下单时间：{{ item.adddate }}</div>
         </div>
         <div class="item_bottom flex_sb">
           <div></div>
@@ -148,44 +153,14 @@ export default {
         }
       ],
       tabCurrent: 0,
-      list: [
-        {
-          id: 1,
-          status: 1,
-          waybillNo: "S2106231431977432",
-          fromCity: "北京市",
-          fromUser: "张三",
-          toCity: "上海市",
-          toUser: "李四",
-          serves:
-            "装车、卸车、吊车、叉车、人工、包装、等待、垫付资金、仓储、入仓",
-          orderTime: "2021-06-23 14:31:00"
-        },
-        {
-          id: 2,
-          status: 2,
-          waybillNo: "S2106231431977433",
-          fromCity: "天津市",
-          fromUser: "王五",
-          toCity: "合肥市",
-          toUser: "赵六",
-          serves:
-            "装车、卸车、吊车、叉车、人工、包装、等待、垫付资金、仓储、入仓",
-          orderTime: "2021-06-25 10:30:00"
-        },
-        {
-          id: 3,
-          status: 3,
-          waybillNo: "S2106231431977435",
-          fromCity: "广州市",
-          fromUser: "欧阳峰",
-          toCity: "深圳市",
-          toUser: "杨过",
-          serves:
-            "装车、卸车、吊车、叉车、人工、包装、等待、垫付资金、仓储、入仓",
-          orderTime: "2021-06-27 09:01:00"
-        }
-      ],
+      model:{
+        finished: "0",
+        totalmonth: "0",
+        totalweek: "0",
+        totalyear: "4",
+        unfinished: "4",
+      },
+      list: [],
       status: "loadmore", //loadmore / loading / nomore
       iconType: "spinner", //spinner-花朵状图标 circle-圆圈状 semicircle-半圆
       loadText: {
@@ -194,22 +169,34 @@ export default {
       },
       overlayShow: true,
       pageData: {
-        pageSize: 10,
+        pageSize: 3,
         pageNum: 1,
         total: 0
       },
-      
+      searchData:{
+        keywords: "",
+        startDate: "", 
+        endDate: ""
+      }
     };
   },
   onLoad() {
     // 获取token
     console.log(this.$store.state.token);
   },
+  watch:{
+    userInfo :{
+      handler() {
+        if(this.$store.state.userInfo.olSID || this.$store.state.userInfo.olDID) {
+          this.GetMyDispatchList();
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   computed:{
     userInfo() {
-      if(this.$store.state.userInfo.olSID || this.$store.state.userInfo.olCID) {
-        this.GetMyDispatchList();
-      }
       return this.$store.state.userInfo;
     }
   },
@@ -217,31 +204,47 @@ export default {
     // this.getDispatchList();
   },
   methods: {
+    goSearch() {
+      this.list = [];
+      this.pageData.pageNum = 1;
+      this.GetMyDispatchList();
+    },
     submitData(data){
       console.log(data)
-      this.startDate = data.startDate
-      this.endDate = data.endDate
+      this.searchData.startDate = data.startDate
+      this.searchData.endDate = data.endDate
       if(data.selectActive){
-        this.endDate = formatDate(new Date());
+        this.searchData.endDate = formatDate(new Date(), "YYYY-MM-DD HH:mm:ss");
         var num = data.selectActive == 2 ? 3 : data.selectActive == 3 ? 12 : 1;
-        this.startDate = getDateForMonthOffset(num);
+        this.searchData.startDate = getDateForMonthOffset(num);
       }
-      console.log(this.startDate, this.endDate)
+      this.$refs.orderFilter.orderFilterShow = false;
+      this.goSearch()
     },
     GetMyDispatchList(){
+      this.status = "loading";
       GetMyDispatchList({
         dbStatus: this.tabCurrent,
         dbSID: this.$store.state.userInfo.olSID,
-        dbCID: this.$store.state.userInfo.olCID,
+        dbDID: this.$store.state.userInfo.olDID,
         page: this.pageData.pageNum,
-        pagesize: this.pageData.pageSize
+        pagesize: this.pageData.pageSize,
+        ...this.searchData
       }).then(res => {
-        console.log("GetSupplyDispatchList", res);
+        this.pageData.total = Math.ceil((res.datatotal || 0) / this.pageData.pageSize) ;
+        this.list = [...this.list, ...(res.data || [])];
+        this.model = res.model
+        if(this.pageData.total <= this.pageData.pageNum) {
+          this.status = "nomore";
+        } else {
+          this.status = "loadmore";
+        }
+        console.log(this.status)
       });
     },
     tabChange(item) {
-      console.log(item);
       this.tabCurrent = item.index;
+      this.goSearch()
     },
     copyText(code) {
       uni.setClipboardData({
@@ -257,16 +260,14 @@ export default {
     },
     onReachBottoms() {
       if (this.status != "loadmore") return;
-      this.status = "loading";
-      setTimeout(() => {
-        this.status = "nomore";
-      }, 2000);
+      this.pageData.pageNum++;
+      this.GetMyDispatchList();
     },
     goFilter() {
       this.$refs.orderFilter.orderFilterShow = true;
     },
     goDetails(item){
-      this.$Router.push('/pages/waybillDetails/waybillDetails?id=' + item.id)
+      this.$Router.push('/pages/waybillDetails/waybillDetails?id=' + item.id )
     }
   }
 };
@@ -277,7 +278,21 @@ export default {
   .pdlr24 {
     padding: 0 24rpx;
   }
-
+  .datas{
+    height: 80rpx;
+    background: #E7EAFF;
+    border-radius: 8rpx;
+    border: 2rpx solid #4E5FF7;
+    line-height: 76rpx;
+    box-sizing: border-box;
+    padding: 0 65rpx;
+    font-size: 28rpx;
+    color: #4E5FF7;
+    margin-bottom: 20rpx;
+    span{
+      font-weight: 500;
+    }
+  }
   .top_wrap {
     background-color: #fff;
     padding-top: 30rpx;

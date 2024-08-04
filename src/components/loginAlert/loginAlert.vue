@@ -21,7 +21,7 @@ export default {
     },
     isBindUserType() {
       return (
-        !this.$store.state.userInfo.olCID && !this.$store.state.userInfo.olSID
+        !this.$store.state.userInfo.olDID && !this.$store.state.userInfo.olSID
       );
     },
     isBindInfo() {

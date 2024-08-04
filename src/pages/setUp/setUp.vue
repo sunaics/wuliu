@@ -4,7 +4,7 @@
       <u--form
         labelPosition="left"
         labelWidth="100"
-        :model="userInfo"
+        :model="userData"
         :rules="rules"
         ref="uForm"
         :labelStyle="{
@@ -13,7 +13,7 @@
           }"
       >
         <u-form-item label="头像" prop="carImg" borderBottom>
-          <div class="uploadBox" v-if="isEdit">
+          <!-- <div class="uploadBox" v-if="isEdit">
             <div class="flex uploadWrap">
               <u-upload
                 :fileList="fileList1"
@@ -25,17 +25,18 @@
                 @afterRead="afterRead"
                 @delete="deletePic"
               ></u-upload>
+              <u-avatar :src="userInfo.avatar"></u-avatar>
             </div>
           </div>
-          <u-icon slot="right" name="arrow-right" v-if="isEdit"></u-icon>
-          <div class="imgWrap flex" v-else>
-            <u-avatar size="64rpx" ></u-avatar>
+          <u-icon slot="right" name="arrow-right" v-if="isEdit"></u-icon> -->
+          <div class="imgWrap flex">
+            <u-avatar size="64rpx"  :src="userData.avatar"></u-avatar>
           </div>
           
         </u-form-item>
-        <template v-if="isEdit">
+        <!-- <template v-if="isEdit">
           <u-form-item label="性别" prop="sex" borderBottom @click="showSex = true">
-            <div class="alginRight">{{ userInfo.sex }}</div>
+            <div class="alginRight">{{ userInfo.sex || '-' }}</div>
             <u-icon slot="right" name="arrow-right"></u-icon>
           </u-form-item>
           <u-form-item label="生日" prop="birth" borderBottom @click="pickerShow = true">
@@ -46,16 +47,16 @@
             <u--input v-model="userInfo.area" inputAlign="right" border="none" placeholder="请选择地区"></u--input>
             <u-icon slot="right" name="arrow-right"></u-icon>
           </u-form-item>
-        </template>
-        <template v-else>
+        </template> -->
+        <template >
           <u-form-item label="性别" prop="sex" borderBottom>
-            <div class="alginRight">{{ userInfo.sex || '-' }}</div>
+            <div class="alginRight">{{ userData.sex || '-' }}</div>
           </u-form-item>
           <u-form-item label="生日" prop="birth" borderBottom>
-            <div class="alginRight">{{ userInfo.birth || '-' }}</div>
+            <div class="alginRight">{{ userData.birth || '-' }}</div>
           </u-form-item>
           <u-form-item label="地区" prop="area" borderBottom >
-            <div class="alginRight">{{ userInfo.area || '-' }}</div>
+            <div class="alginRight">{{ userData.qsArea || '-' }}</div>
           </u-form-item>
         </template>
         <u-form-item label="绑定手机" prop="mobile" borderBottom @click="bindMobile"> 
@@ -107,7 +108,7 @@
 
 <script>
 import { pageMixin } from "@/mixins";
-import { getUserIfo } from "@/api/user";
+// import { getUserIfo, getUserUserDetail } from "@/api/user";
 import areas from "@/utils/areas.json";
 export default {
   components: {},
@@ -115,18 +116,6 @@ export default {
   data() {
     return {
       showSex: false,
-      userInfo: {
-        // 头像
-        avatar: "../../static/img/myBg.png",
-        // 性别
-        sex: "男",
-        // 生日
-        birth: "",
-        // 地区
-        area: "",
-        // 绑定手机
-        mobile: ""
-      },
       rules: {
         name: [
           {
@@ -196,7 +185,7 @@ export default {
   },
   methods: {
     getUserIfo(){
-      getUserIfo({
+      getUserUserDetail({
         id: this.$store.state.userInfo.id
       }).then(res=>{
         console.log(res);
@@ -363,7 +352,7 @@ export default {
 
   // 页面周期函数--监听页面加载
   onLoad() {
-    this.getUserIfo()
+    // this.getUserIfo()
   },
   // 页面周期函数--监听页面初次渲染完成
   onReady() {},

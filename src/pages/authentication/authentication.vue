@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import { AuthenticationUpdate } from "@/api/user";
 export default {
   components: {},
   data() {
@@ -153,6 +154,7 @@ export default {
     isIphone() {
       return this.$store.state.isIphone;
     },
+    
   },
   methods: {
     submit() {
@@ -160,6 +162,7 @@ export default {
 				uni.$u.toast('校验通过')
 			}).catch(errors => {
 				uni.$u.toast('校验失败')
+        AuthenticationUpdate()
 			})
 		},
     sexSelect(e) {

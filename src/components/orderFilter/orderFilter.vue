@@ -87,8 +87,8 @@ export default {
       startDate: "",
       endDate: "",
       pickerValue: "",
-      date1: "",
-      date2: "",
+      date1: Number(new Date()),
+      date2: Number(new Date()),
       pickerShow1: false,
       pickerShow2: false
     };
@@ -133,6 +133,7 @@ export default {
       }
       this.startDate = formatDate(date.value);
       this.pickerShow1 = false;
+      this.selectActive = 0;
     },
     confirm2(date) {
       console.log(date);
@@ -145,6 +146,7 @@ export default {
       }
       this.endDate = formatDate(date.value);
       this.pickerShow2 = false;
+      this.selectActive = 0;
     },
     clearSelect() {
       this.selectActive = 0;
@@ -154,13 +156,7 @@ export default {
       this.date2 = "";
     },
     submitData() {
-      if (this.selectActive == 0 && !this.startDate && !this.endDate) {
-        uni.showToast({
-          title: "请选择时间",
-          icon: "none"
-        });
-        return;
-      } else if ( this.selectActive == 0 && ( !this.startDate || !this.endDate ) ) {
+      if ( this.selectActive == 0 && ( (this.startDate && !this.endDate) || ( !this.startDate && this.endDate)  ) ) {
         uni.showToast({
           title: "请完善起止时间",
           icon: "none"

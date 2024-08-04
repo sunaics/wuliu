@@ -52,7 +52,7 @@ export function uploadFile(filePath) {
         if (res.errMsg === 'uploadFile:ok') {
           let url = aliyunServerURL + '/' + aliyunFileKey;
           resolve({
-            status: true,
+            status: res.statusCode,
             data:{
               url,
             },
