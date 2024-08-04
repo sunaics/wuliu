@@ -63,8 +63,8 @@ export default {
           ...res.data[0],
           // olDID: this.activeIndex === 0 ? res.model.carid :  '',
           // olSID: this.activeIndex === 1 ? res.model.supplyid :  0
-             olDID: this.activeIndex === 0 ? 1 :  '',
-          olSID: this.activeIndex === 1 ? 1 :  0
+          olDID: this.activeIndex === 0 ? res.model.olDID :  '',
+          olSID: this.activeIndex === 1 ? res.model.olSID :  0
         });
       });
     }

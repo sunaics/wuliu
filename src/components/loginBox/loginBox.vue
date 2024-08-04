@@ -23,12 +23,24 @@
         :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4E5FF7"
         @click="bindPhone"></u-button>
       <template v-else>
-        <u-button type="primary" text="立即登录" size="large"
-          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4E5FF7" @click="login"
-          :loading="loading" :loadingText="loadingText"></u-button>
-        <u-button type="primary" text="快捷登录" size="large"
-          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }" color="#4FC57A"
-          @click="quickLogin"></u-button>
+        <u-button
+          type="primary"
+          text="立即登录"
+          size="large"
+          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
+          color="#4E5FF7"
+          @click="login"
+          :loading="loading"
+          :loadingText="loadingText"
+        ></u-button>
+        <u-button
+          type="primary"
+          text="快捷登录"
+          size="large"
+          :customStyle="{ fontSize: '36rpx', marginTop: '60rpx', borderRadius: '10rpx' }"
+          color="#4FC57A"
+          @click="quickLogin"
+        ></u-button>
       </template>
     </div>
   </div>
@@ -238,15 +250,15 @@ export default {
     this.getWeiXinCode();
   },
   // 组件周期函数--监听组件数据更新之前
-  beforeUpdate() { },
+  beforeUpdate() {},
   // 组件周期函数--监听组件数据更新之后
-  updated() { },
+  updated() {},
   // 组件周期函数--监听组件激活(显示)
-  activated() { },
+  activated() {},
   // 组件周期函数--监听组件停用(隐藏)
-  deactivated() { },
+  deactivated() {},
   // 组件周期函数--监听组件销毁之前
-  beforeDestroy() { }
+  beforeDestroy() {}
 };
 </script>
 
@@ -255,7 +267,6 @@ export default {
   .title {
     display: none;
   }
-
   &.alertWrap .title {
     display: block;
     font-size: 40rpx;

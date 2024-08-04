@@ -265,7 +265,6 @@ export default {
   watch: {},
   // 页面周期函数--监听页面初次渲染完成
   onReady() {
-
   },
   // 页面周期函数--监听页面显示(not-nvue)
   onShow() { },
